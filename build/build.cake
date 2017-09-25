@@ -101,6 +101,7 @@ Task("Package")
 
     DotNetCorePack("./../src/SimpleEventStore/", settings);
     DotNetCorePack("./../src/SimpleEventStore.AzureDocumentDb/", settings);
+    DotNetCorePack("./../src/SimpleEventStore.AzureDocumentDb.ChangeFeedProcessor/", settings);
 });
 
 
