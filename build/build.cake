@@ -17,11 +17,11 @@ var buildVersion = Argument("buildVersion", "1.0.0");
 //////////////////////////////////////////////////////////////////////
 
 // Define directories.
-var solutionDir = "../src/SimpleEventStore/";
+var solutionDir = "../src/";
 var solutionFile = solutionDir + "SimpleEventStore.sln";
 var documentDbTestConfigFiles = new [] {
-	File("../src/SimpleEventStore/SimpleEventStore.AzureDocumentDb.Tests/bin/" + configuration + "/netcoreapp1.1/appsettings.json"),
-	File("../src/SimpleEventStore/SimpleEventStore.AzureDocumentDb.Tests/bin/" + configuration + "/net452/appsettings.json")
+	File("../src/SimpleEventStore.AzureDocumentDb.Tests/bin/" + configuration + "/netcoreapp1.1/appsettings.json"),
+	File("../src/SimpleEventStore.AzureDocumentDb.Tests/bin/" + configuration + "/net452/appsettings.json")
 };
 var testDirs = GetDirectories(solutionDir + "*.Tests");
 var outputDir = "./nuget";
@@ -99,8 +99,8 @@ Task("Package")
         ArgumentCustomization = args => args.Append("/p:BuildVersion=" + buildVersion)
     };
 
-    DotNetCorePack("./../src/SimpleEventStore/SimpleEventStore/", settings);
-    DotNetCorePack("./../src/SimpleEventStore/SimpleEventStore.AzureDocumentDb/", settings);
+    DotNetCorePack("./../src/SimpleEventStore/", settings);
+    DotNetCorePack("./../src/SimpleEventStore.AzureDocumentDb/", settings);
 });
 
 
