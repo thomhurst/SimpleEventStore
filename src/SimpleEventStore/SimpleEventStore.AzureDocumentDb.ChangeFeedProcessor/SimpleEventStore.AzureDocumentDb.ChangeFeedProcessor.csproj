@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net452</TargetFrameworks>
+    <BuildVersion>1.0.0</BuildVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Azure.DocumentDB" Version="1.14.1" />
+    <PackageReference Include="Microsoft.Azure.DocumentDB.ChangeFeedProcessor" Version="1.1.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SimpleEventStore\SimpleEventStore.csproj" />
+    <ProjectReference Include="..\SimpleEventStore.AzureDocumentDb\SimpleEventStore.AzureDocumentDb.csproj" />
+  </ItemGroup>
+  <PropertyGroup>
+    <Title>Asos.SimpleEventStore.AzureDocumentDb.ChangeFeedProcessor</Title>
+    <Description>Provides a DocumentDB storage engine for Simple Event Store (SES)</Description>
+    <Company>ASOS</Company>
+    <Copyright>Copyright ASOS ©2016</Copyright>
+    <Product>Asos.SimpleEventStore.AzureDocumentDb.ChangeFeedProcessor</Product>
+    <PackageId>Asos.SimpleEventStore.AzureDocumentDb.ChangeFeedProcessor</PackageId>
+    <Authors>ASOS</Authors>
+    <PackageTags>eventsourcing documentdb azure</PackageTags>
+    <PackageProjectUrl>https://github.com/ASOS/SimpleEventStore</PackageProjectUrl>
+    <ApplicationIcon />
+    <OutputTypeEx>library</OutputTypeEx>
+    <Version>$(BuildVersion)</Version>
+    <PackageVersion>$(BuildVersion)</PackageVersion>
+  </PropertyGroup>
+</Project>
