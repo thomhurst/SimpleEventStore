@@ -13,6 +13,9 @@ namespace SimpleEventStore.AzureDocumentDb.ChangeFeedProcessor
 
         public EventStoreChangeFeedObserver(Func<IReadOnlyCollection<StorageEvent>, string, Task> onNextEvent, ISerializationTypeMap typeMap)
         {
+            Guard.IsNotNull(nameof(onNextEvent), onNextEvent);
+            Guard.IsNotNull(nameof(typeMap), typeMap);
+            
             this.onNextEvent = onNextEvent;
             this.typeMap = typeMap;
         }
