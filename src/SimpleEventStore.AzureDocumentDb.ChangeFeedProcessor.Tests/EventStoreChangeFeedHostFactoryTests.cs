@@ -24,7 +24,7 @@ namespace SimpleEventStore.AzureDocumentDb.ChangeFeedProcessor.Tests
             var sut = new EventStoreChangeFeedHostFactory((events, checkpoint) => Task.FromResult(0), new DefaultSerializationTypeMap());
             var result = sut.CreateObserver();
             
-            Assert.IsType<EventStoreChangeFeedHost>(result);
+            Assert.IsType<EventStoreChangeFeedObserver>(result);
         }
     }
 }

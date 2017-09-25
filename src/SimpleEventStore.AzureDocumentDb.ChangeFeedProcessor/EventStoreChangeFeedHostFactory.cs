@@ -21,7 +21,7 @@ namespace SimpleEventStore.AzureDocumentDb.ChangeFeedProcessor
         
         public IChangeFeedObserver CreateObserver()
         {
-            return new EventStoreChangeFeedHost(onNextEvent, typeMap);
+            return new EventStoreChangeFeedObserver(onNextEvent, typeMap);
         }
     }
 }
