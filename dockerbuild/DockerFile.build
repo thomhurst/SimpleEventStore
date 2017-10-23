@@ -1,0 +1,8 @@
+FROM microsoft/dotnet:2.0.0-sdk-2.0.2
+
+ADD build workDir/build
+ADD src workDir/src
+
+WORKDIR workDir/build
+
+RUN [ "simplebuild.cmd" ]

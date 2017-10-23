@@ -1,0 +1,1 @@
+docker build -t ses-build -f DockerFile.build ../
