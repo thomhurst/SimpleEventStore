@@ -2,10 +2,10 @@
 
 #Variables
 $docDbConfig = "../src/SimpleEventStore/SimpleEventStore.AzureDocumentDb.Tests/appsettings.json"
-$buildVersion = "1.0.0"
-$uri = "<URI>"
-$authKey = "<AUTHKEY>"
-$consistencyLevel = "<SESSION>"
+$buildVersion = $env:buildVersion
+$uri = $env:uri
+$authKey = $env:authKey
+$consistencyLevel = $env:consistencyLevel
 
 #Transform config
 Write-Host "Transforming config"

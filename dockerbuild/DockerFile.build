@@ -1,5 +1,15 @@
 FROM microsoft/dotnet:2.0.0-sdk-2.0.2
 
+ARG buildVersion
+ARG uri
+ARG authKey
+ARG consistencyLevel="1.0.0"
+
+ENV buildVersion=${buildVersion}
+ENV uri=${uri}
+ENV authKey=${authKey}
+ENV consistencyLevel=${consistencyLevel}
+
 ADD build workDir/build
 ADD src workDir/src
 
