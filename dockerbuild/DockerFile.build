@@ -5,4 +5,4 @@ ADD src workDir/src
 
 WORKDIR workDir/build
 
-RUN [ "simplebuild.cmd" ]
+RUN ["powershell", ".\\simplebuild.ps1"]
