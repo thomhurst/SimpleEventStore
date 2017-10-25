@@ -18,16 +18,21 @@ $config | ConvertTo-Json  | set-content $docDbConfig
 #Restore
 Write-Host "Restoring packages"
 dotnet restore "../src/SimpleEventStore/SimpleEventStore.sln"
+if($LastExitCode -ne 0) { exit 1 }
 
 #Build
 Write-Host "Building"
 dotnet build "../src/SimpleEventStore/SimpleEventStore" -c "Release" -f "netstandard1.6"
+if($LastExitCode -ne 0) { exit 1 }
 dotnet build "../src/SimpleEventStore/SimpleEventStore.AzureDocumentDb" -c "Release" -f "netstandard1.6"
+if($LastExitCode -ne 0) { exit 1 }
 
 #Test
 Write-Host "Running unit tests"
-dotnet test "../src/SimpleEventStore/SimpleEventStore.Tests" -c "Release" -f "netcoreapp2.0"
-dotnet test "../src/SimpleEventStore/SimpleEventStore.AzureDocumentDb.Tests" -c "Release" -f "netcoreapp2.0"
+exec { dotnet test "../src/SimpleEventStore/SimpleEventStore.Tests" -c "Release" -f "netcoreapp2.0" }
+if($LastExitCode -ne 0) { exit 1 }
+exec { dotnet test "../src/SimpleEventStore/SimpleEventStore.AzureDocumentDb.Tests" -c "Release" -f "netcoreapp2.0" }
+if($LastExitCode -ne 0) { exit 1 }
 
 #Package - will work once TODO point is covered
 #Write-Host "Packaging"
