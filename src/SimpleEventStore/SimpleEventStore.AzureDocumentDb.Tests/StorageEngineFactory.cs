@@ -13,7 +13,7 @@ namespace SimpleEventStore.AzureDocumentDb.Tests
         internal static async Task<IStorageEngine> Create(string databaseName)
         {
             var config = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json")
+                .AddEnvironmentVariables()
                 .Build();
 
             var documentDbUri = config["Uri"];

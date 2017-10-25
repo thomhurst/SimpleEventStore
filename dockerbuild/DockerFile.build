@@ -5,10 +5,10 @@ ARG uri
 ARG authKey
 ARG consistencyLevel="1.0.0"
 
-ENV buildVersion=${buildVersion}
-ENV uri=${uri}
-ENV authKey=${authKey}
-ENV consistencyLevel=${consistencyLevel}
+ENV BuildVersion=${buildVersion}
+ENV Uri=${uri}
+ENV AuthKey=${authKey}
+ENV ConsistencyLevel=${consistencyLevel}
 
 ADD build workDir/build
 ADD src workDir/src

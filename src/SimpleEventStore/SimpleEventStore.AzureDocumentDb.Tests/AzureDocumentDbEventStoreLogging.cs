@@ -43,7 +43,7 @@ namespace SimpleEventStore.AzureDocumentDb.Tests
         private static async Task<IStorageEngine> CreateStorageEngine(Action<ResponseInformation> onSuccessCallback, string databaseName = "LoggingTests")
         {
             var config = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json")
+                .AddEnvironmentVariables()
                 .Build();
 
             var documentDbUri = config["Uri"];
