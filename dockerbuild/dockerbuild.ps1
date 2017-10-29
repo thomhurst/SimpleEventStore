@@ -10,4 +10,5 @@ docker build -t ses-build -f DockerFile.build ../ `
 --build-arg authKey=$authKey `
 --build-arg consistencyLevel=$consistencyLevel `
 --build-arg buildVersion=$buildVersion `
---no-cache
+--no-cache `
+--rm
