@@ -1,18 +1,23 @@
 FROM microsoft/dotnet:2.0.0-sdk-2.0.2
 
+SHELL [ "powershell", "-Command" ]
+
 ARG buildVersion
 ARG uri
 ARG authKey
-ARG consistencyLevel="1.0.0"
+ARG consistencyLevel
 
-ENV BuildVersion=${buildVersion}
 ENV Uri=${uri}
 ENV AuthKey=${authKey}
 ENV ConsistencyLevel=${consistencyLevel}
 
-ADD build workDir/build
 ADD src workDir/src
 
 WORKDIR workDir/build
 
-RUN ["powershell", ".\\simplebuild.ps1"]
+RUN dotnet build "../src/SimpleEventStore/SimpleEventStore.sln" -c "Release"
+RUN dotnet test "../src/SimpleEventStore/SimpleEventStore.Tests" -c "Release" -f "netcoreapp2.0"
+RUN dotnet test "../src/SimpleEventStore/SimpleEventStore.AzureDocumentDb.Tests" -c "Release" -f "netcoreapp2.0"
+RUN mkdir "./nuget" -Force
+RUN dotnet pack "../src/SimpleEventStore/SimpleEventStore" -c "Release" -o "./nuget" /p:BuildVersion="$env:buildVersion" --no-build
+RUN dotnet pack "../src/SimpleEventStore/SimpleEventStore.AzureDocumentDb" -c "Release" -o "./nuget" /p:BuildVersion="$env:buildVersion" --no-build
