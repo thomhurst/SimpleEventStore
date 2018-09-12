@@ -1,0 +1,5 @@
+bin/*
+obj/*
+README.md
+License.md
+.vscode/*
