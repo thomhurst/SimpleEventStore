@@ -13,10 +13,10 @@ namespace SimpleEventStore.AzureDocumentDb.Tests
         internal static async Task<IStorageEngine> Create(string databaseName, Action<CollectionOptions> collectionOverrides = null)
         {
             var config = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json")
+                .AddEnvironmentVariables()
                 .Build();
 
-            var consistencyLevel = config["ConsistencyLevel"];
+            var consistencyLevel = config["COSMOS_CONSISTENCYLEVEL"];
             ConsistencyLevel consistencyLevelEnum;
 
             if(!Enum.TryParse(consistencyLevel, true, out consistencyLevelEnum))

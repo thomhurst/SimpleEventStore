@@ -9,11 +9,11 @@ namespace SimpleEventStore.AzureDocumentDb.Tests
         internal static DocumentClient Create(string databaseName)
         {
             var config = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json")
+                .AddEnvironmentVariables()
                 .Build();
 
-            var documentDbUri = config["Uri"];
-            var authKey = config["AuthKey"];
+            var documentDbUri = config["COSMOS_URI"];
+            var authKey = config["COSMOS_AUTHKEY"];
 
             return new DocumentClient(new Uri(documentDbUri), authKey);
         }

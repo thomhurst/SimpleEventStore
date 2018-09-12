@@ -43,12 +43,12 @@ namespace SimpleEventStore.AzureDocumentDb.Tests
         private static async Task<IStorageEngine> CreateStorageEngine(Action<ResponseInformation> onSuccessCallback, string databaseName = "LoggingTests")
         {
             var config = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json")
+                .AddEnvironmentVariables()
                 .Build();
 
-            var documentDbUri = config["Uri"];
-            var authKey = config["AuthKey"];
-            var consistencyLevel = config["ConsistencyLevel"];
+            var documentDbUri = config["COSMOS_URI"];
+            var authKey = config["COSMOS_AUTHKEY"];
+            var consistencyLevel = config["COSMOS_CONSISTENCYLEVEL"];
 
             if (!Enum.TryParse(consistencyLevel, true, out ConsistencyLevel consistencyLevelEnum))
             {
