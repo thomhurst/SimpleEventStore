@@ -2,7 +2,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>netstandard1.6</TargetFrameworks>
-    <BuildVersion>1.0.0</BuildVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Azure.DocumentDB.Core" Version="1.6.0" Condition="'$(TargetFramework)' == 'netstandard1.6'" />
@@ -26,7 +25,5 @@
     <PackageProjectUrl>https://github.com/ASOS/SimpleEventStore</PackageProjectUrl>
     <ApplicationIcon />
     <OutputTypeEx>library</OutputTypeEx>
-    <Version>$(BuildVersion)</Version>
-    <PackageVersion>$(BuildVersion)</PackageVersion>
   </PropertyGroup>
 </Project>
