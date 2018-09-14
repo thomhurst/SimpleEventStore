@@ -1,9 +1,9 @@
-COSMOS_URI=$1
-COSMOS_AUTHKEY=$2
-COSMOS_CONSISTENCYLEVEL=$3
-NUGET_SOURCE=$4
-NUGET_KEY=$5
-BUILD_VERSION=$6
+BUILD_VERSION=${1:-"1.0.0"}
+COSMOS_URI=${2:-"https://localhost:8081/"}
+COSMOS_AUTHKEY=${3:-"C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw=="}
+COSMOS_CONSISTENCYLEVEL=${4:-"BoundedStaleness"}
+NUGET_SOURCE=$5
+NUGET_KEY=$6
 
 docker build -t simpleeventstore-build . && \
 docker run --rm --name simpleeventstore-build \
