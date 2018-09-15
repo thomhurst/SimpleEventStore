@@ -6,4 +6,7 @@ dotnet test ../src/SimpleEventStore/SimpleEventStore.AzureDocumentDb.Tests/Simpl
 dotnet pack ../src/SimpleEventStore/SimpleEventStore/SimpleEventStore.csproj -c Release /p:Version=$BUILD_VERSION -o /packages --no-build && \
 dotnet pack ../src/SimpleEventStore/SimpleEventStore.AzureDocumentDb/SimpleEventStore.AzureDocumentDb.csproj -c Release /p:Version=$BUILD_VERSION -o /packages --no-build && \
 
-dotnet nuget push /packages/*.nupkg -s $NUGET_SOURCE -k $NUGET_KEY
+for f in /packages/*.nupkg; do
+    dotnet nuget push $f -s $NUGET_SOURCE -k $NUGET_KEY
+  echo "File -> $f"
+done
