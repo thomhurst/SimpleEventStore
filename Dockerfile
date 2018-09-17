@@ -11,4 +11,4 @@ COPY ./src/SimpleEventStore/SimpleEventStore.Tests/SimpleEventStore.Tests.csproj
 COPY ./src/SimpleEventStore/SimpleEventStore.AzureDocumentDb/SimpleEventStore.AzureDocumentDb.csproj ./SimpleEventStore.AzureDocumentDb/
 COPY ./src/SimpleEventStore/SimpleEventStore.AzureDocumentDb.Tests/SimpleEventStore.AzureDocumentDb.Tests.csproj ./SimpleEventStore.AzureDocumentDb.Tests/
 RUN dotnet restore
-COPY ./src ./
+COPY ./src/SimpleEventStore ./
