@@ -2,7 +2,6 @@ FROM microsoft/dotnet:2.1-sdk-alpine AS build
 
 WORKDIR /build
 COPY ./build/build.sh ./build.sh
-RUN ["chmod", "-x", "build.sh"]
 
 WORKDIR /src
 COPY ./src/SimpleEventStore/SimpleEventStore.sln ./

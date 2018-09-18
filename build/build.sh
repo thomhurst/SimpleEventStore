@@ -7,4 +7,7 @@ dotnet test ../src/SimpleEventStore.AzureDocumentDb.Tests/SimpleEventStore.Azure
 dotnet pack ../src/SimpleEventStore/SimpleEventStore.csproj -c Release -p:Version=$BUILD_VERSION -o /packages --no-build && \
 dotnet pack ../src/SimpleEventStore.AzureDocumentDb/SimpleEventStore.AzureDocumentDb.csproj -c Release -p:Version=$BUILD_VERSION -o /packages --no-build && \
 
-for f in /packages/*.nupkg; do dotnet nuget push $f -s $NUGET_SOURCE -k $NUGET_KEY; done
+for f in /packages/*.nupkg
+do
+    dotnet nuget push $f -s $NUGET_SOURCE -k $NUGET_KEY
+done
