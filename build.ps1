@@ -42,6 +42,6 @@ Exec { dotnet test SimpleEventStore.AzureDocumentDb.Tests -c $Configuration --no
 
 Write-Stage "Creating nuget packages"
 Exec { dotnet pack SimpleEventStore -c $Configuration -o $outputDir -p:BuildVersion=$BuildVersion --no-build }
-Exec { dotnet pack SimpleEventStore.AzureDocumentDb.Tests -c $Configuration -o $outputDir  -p:BuildVersion=$BuildVersion --no-build }
+Exec { dotnet pack SimpleEventStore.AzureDocumentDb -c $Configuration -o $outputDir  -p:BuildVersion=$BuildVersion --no-build }
 
 Pop-Location
