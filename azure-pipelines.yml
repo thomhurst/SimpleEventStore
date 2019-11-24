@@ -18,4 +18,3 @@ steps:
     inputs:
       filePath: '.\build.ps1'
       arguments: '-Uri $(CosmosDbEmulator.Endpoint)'
-      workingDirectory: '$(Build.SourcesDirectory)\build'
