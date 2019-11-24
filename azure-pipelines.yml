@@ -3,6 +3,9 @@
 trigger:
 - master
 
+pr:
+- master
+
 pool:
   vmImage: 'vs2017-win2016'
 
@@ -18,3 +21,8 @@ steps:
     inputs:
       filePath: '.\build.ps1'
       arguments: '-Uri $(CosmosDbEmulator.Endpoint)'
+  - task: PublishTestResults@2
+    condition: succeededOrFailed()
+    inputs:
+      testRunner: VSTest
+      testResultsFiles: '**/*.trx'
