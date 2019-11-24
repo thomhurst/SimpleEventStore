@@ -41,7 +41,6 @@ Exec { dotnet test SimpleEventStore.Tests -c $Configuration --no-build --logger 
 Exec { dotnet test SimpleEventStore.AzureDocumentDb.Tests -c $Configuration --no-build --logger trx }
 
 Write-Stage "Creating nuget packages"
-rm "../../output/*.nupkg"
 Exec { dotnet pack SimpleEventStore -c $Configuration -o $outputDir -p:BuildVersion=$BuildVersion --no-build }
 Exec { dotnet pack SimpleEventStore.AzureDocumentDb.Tests -c $Configuration -o $outputDir  -p:BuildVersion=$BuildVersion --no-build }
 
