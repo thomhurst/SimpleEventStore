@@ -29,6 +29,7 @@ $outputDir = "../../output";
 Push-Location src\SimpleEventStore
 
 Write-Stage "Calculating Version"
+dotnet tool restore
 $gitVersion = dotnet gitversion | ConvertFrom-Json
 $buildVersion = $gitVersion.LegacySemVer
 Write-Host "Build version set to '$buildVersion'"
