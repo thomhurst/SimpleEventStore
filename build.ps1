@@ -2,7 +2,6 @@ Param(
     [string]$Uri = "https://localhost:8081/",
     [string]$AuthKey = "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==",
     [string]$ConsistencyLevel = "BoundedStaleness",
-    [string]$BuildVersion = "1.0.0",
     [string]$Configuration = "Release"
 )
 
@@ -29,8 +28,13 @@ function Exec
 $outputDir = "../../output";
 Push-Location src\SimpleEventStore
 
+Write-Stage "Calculating Version"
+$gitVersion = dotnet gitversion | ConvertFrom-Json
+$buildVersion = $gitVersion.LegacySemVer
+Write-Host "Build version set to '$buildVersion'"
+
 Write-Stage "Building solution"
-Exec { dotnet build -c $Configuration -p:BuildVersion=$BuildVersion }
+Exec { dotnet build -c $Configuration -p:BuildVersion=$buildVersion }
 
 Write-Stage "Running tests"
 $env:Uri = $Uri
@@ -41,7 +45,7 @@ Exec { dotnet test SimpleEventStore.Tests -c $Configuration --no-build --logger 
 Exec { dotnet test SimpleEventStore.AzureDocumentDb.Tests -c $Configuration --no-build --logger trx }
 
 Write-Stage "Creating nuget packages"
-Exec { dotnet pack SimpleEventStore -c $Configuration -o $outputDir -p:BuildVersion=$BuildVersion --no-build }
-Exec { dotnet pack SimpleEventStore.AzureDocumentDb -c $Configuration -o $outputDir  -p:BuildVersion=$BuildVersion --no-build }
+Exec { dotnet pack SimpleEventStore -c $Configuration -o $outputDir -p:BuildVersion=$buildVersion --no-build }
+Exec { dotnet pack SimpleEventStore.AzureDocumentDb -c $Configuration -o $outputDir  -p:BuildVersion=$buildVersion --no-build }
 
 Pop-Location
