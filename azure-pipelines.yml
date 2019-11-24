@@ -28,5 +28,5 @@ steps:
       testResultsFiles: '**/*.trx'
   - task: CopyFiles@2
     inputs:
-      Contents: './output/*.nupkg'
+      Contents: 'output\*.nupkg'
       TargetFolder: '$(Build.ArtifactStagingDirectory)'
