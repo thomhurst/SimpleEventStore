@@ -13,23 +13,36 @@ function Write-Stage([string]$name)
     Write-Host $('=' * 30) -ForegroundColor Green
 }
 
+function Exec
+{
+    [CmdletBinding()]
+    param(
+        [Parameter(Position=0,Mandatory=1)][scriptblock]$cmd,
+        [Parameter(Position=1,Mandatory=0)][string]$errorMessage = ($msgs.error_bad_command -f $cmd)
+    )
+    & $cmd
+    if ($lastexitcode -ne 0) {
+        throw ("Exec: " + $errorMessage)
+    }
+}
+
 $outputDir = "../../output";
 Push-Location src\SimpleEventStore
 
 Write-Stage "Building solution"
-dotnet build -c $Configuration -p:BuildVersion=$BuildVersion
+Exec { dotnet build -c $Configuration -p:BuildVersion=$BuildVersion }
 
 Write-Stage "Running tests"
 $env:Uri = $Uri
 $env:AuthKey = $AuthKey
 $env:ConsistencyLevel = $ConsistencyLevel
 
-dotnet test SimpleEventStore.Tests --no-build
-dotnet test SimpleEventStore.AzureDocumentDb.Tests --no-build
+Exec { dotnet test SimpleEventStore.Tests -c $Configuration --no-build }
+Exec { dotnet test SimpleEventStore.AzureDocumentDb.Tests -c $Configuration --no-build }
 
 Write-Stage "Creating nuget packages"
 rm "../../output/*.nupkg"
-dotnet pack SimpleEventStore -c $Configuration -o $outputDir -p:BuildVersion=$BuildVersion --no-build
-dotnet pack SimpleEventStore.AzureDocumentDb.Tests -c $Configuration -o $outputDir  -p:BuildVersion=$BuildVersion --no-build
+Exec { dotnet pack SimpleEventStore -c $Configuration -o $outputDir -p:BuildVersion=$BuildVersion --no-build }
+Exec { dotnet pack SimpleEventStore.AzureDocumentDb.Tests -c $Configuration -o $outputDir  -p:BuildVersion=$BuildVersion --no-build }
 
 Pop-Location
