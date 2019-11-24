@@ -34,3 +34,22 @@ stages:
           Contents: 'output\*.nupkg'
           TargetFolder: '$(Build.ArtifactStagingDirectory)'
       - task: PublishBuildArtifacts@1
+- stage: Publish
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  jobs:
+    - job: Publish
+      pool:
+        vmImage: 'vs2017-win2016'
+      steps:        
+        - task: DownloadBuildArtifacts@0
+          inputs:
+            artifactName: 'drop'
+            buildType: 'current'
+            downloadType: 'single'
+            downloadPath: '$(System.ArtifactsDirectory)'
+        - task: DotNetCoreCLI@2
+          inputs:
+            command: 'push'
+            packagesToPush: '$(System.ArtifactsDirectory)/*.nupkg'
+            nuGetFeedType: 'external'
+            publishFeedCredentials: 'ASOS nuget.org feed'
