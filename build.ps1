@@ -37,8 +37,8 @@ $env:Uri = $Uri
 $env:AuthKey = $AuthKey
 $env:ConsistencyLevel = $ConsistencyLevel
 
-Exec { dotnet test SimpleEventStore.Tests -c $Configuration --no-build }
-Exec { dotnet test SimpleEventStore.AzureDocumentDb.Tests -c $Configuration --no-build }
+Exec { dotnet test SimpleEventStore.Tests -c $Configuration --no-build --logger trx }
+Exec { dotnet test SimpleEventStore.AzureDocumentDb.Tests -c $Configuration --no-build --logger trx }
 
 Write-Stage "Creating nuget packages"
 rm "../../output/*.nupkg"
