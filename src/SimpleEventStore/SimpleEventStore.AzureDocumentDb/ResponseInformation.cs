@@ -1,4 +1,7 @@
 using System.Collections.Specialized;
+using System.Globalization;
+using Microsoft.Azure.Cosmos;
+using Microsoft.Azure.Cosmos.Scripts;
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
 
@@ -27,6 +30,16 @@ namespace SimpleEventStore.AzureDocumentDb
                 ResponseHeaders = response.ResponseHeaders
             };
         }
+        
+        public static ResponseInformation FromWriteResponse(string requestIdentifier, StoredProcedureExecuteResponse<dynamic> response)
+        {
+            return new ResponseInformation
+            {
+                RequestIdentifier = requestIdentifier,
+                RequestCharge = response.RequestCharge,
+                ResponseHeaders = HeaderToNamedValueCollection(response.Headers)
+            };
+        }
 
         public static ResponseInformation FromReadResponse(string requestIdentifier, IFeedResponse<DocumentDbStorageEvent> response)
         {
@@ -39,6 +52,16 @@ namespace SimpleEventStore.AzureDocumentDb
                 ResponseHeaders = response.ResponseHeaders
             };
         }
+        
+        public static ResponseInformation FromReadResponse(string requestIdentifier, Microsoft.Azure.Cosmos.FeedResponse<DocumentDbStorageEvent> response)
+        {
+            return new ResponseInformation
+            {
+                RequestIdentifier = requestIdentifier,
+                RequestCharge = response.RequestCharge,
+                ResponseHeaders = HeaderToNamedValueCollection(response.Headers)
+            };
+        }
 
         public static ResponseInformation FromSubscriptionReadResponse(string requestIdentifier, IFeedResponse<Document> response)
         {
@@ -49,6 +72,21 @@ namespace SimpleEventStore.AzureDocumentDb
                 MaxResourceQuota = response.MaxResourceQuota,
                 RequestCharge = response.RequestCharge,
                 ResponseHeaders = response.ResponseHeaders
+            };
+        }
+
+        private static NameValueCollection HeaderToNamedValueCollection(Headers headers)
+        {
+            return new NameValueCollection()
+            {
+                {"Location", headers.Location},
+                {"Session", headers.Session},
+                {"RequestCharge", headers.RequestCharge.ToString(CultureInfo.InvariantCulture)},
+                {"ActivityId", headers.ActivityId},
+                {"ContentLength", headers.ContentLength},
+                {"ContentType", headers.ContentType},
+                {"ContinuationToken", headers.ContinuationToken},
+                {"ETag", headers.ETag}
             };
         }
     }

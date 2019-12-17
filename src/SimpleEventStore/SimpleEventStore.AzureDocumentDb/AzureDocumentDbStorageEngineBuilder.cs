@@ -8,7 +8,7 @@ namespace SimpleEventStore.AzureDocumentDb
     {
         private readonly string databaseName;
         private readonly DocumentClient client;
-        private readonly CollectionOptions collectionOptions = new CollectionOptions();
+        private readonly CollectionOptionsV2 _collectionOptionsV2 = new CollectionOptionsV2();
         private readonly DatabaseOptions databaseOptions = new DatabaseOptions();
         private readonly LoggingOptions loggingOptions = new LoggingOptions();
         private ISerializationTypeMap typeMap = new DefaultSerializationTypeMap();
@@ -23,11 +23,11 @@ namespace SimpleEventStore.AzureDocumentDb
             this.databaseName = databaseName;
         }
 
-        public AzureDocumentDbStorageEngineBuilder UseCollection(Action<CollectionOptions> action)
+        public AzureDocumentDbStorageEngineBuilder UseCollection(Action<CollectionOptionsV2> action)
         {
             Guard.IsNotNull(nameof(action), action);
 
-            action(collectionOptions);
+            action(_collectionOptionsV2);
             return this;
         }
 
@@ -64,7 +64,7 @@ namespace SimpleEventStore.AzureDocumentDb
 
         public IStorageEngine Build()
         {
-            var engine = new AzureDocumentDbStorageEngine(this.client, this.databaseName, this.collectionOptions,this.databaseOptions, this.loggingOptions, this.typeMap, JsonSerializer.Create(this.jsonSerializerSettings));
+            var engine = new AzureDocumentDbStorageEngine(this.client, this.databaseName, this._collectionOptionsV2,this.databaseOptions, this.loggingOptions, this.typeMap, JsonSerializer.Create(this.jsonSerializerSettings));
             return engine;
         }
     }

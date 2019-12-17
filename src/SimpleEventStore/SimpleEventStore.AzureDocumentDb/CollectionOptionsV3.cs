@@ -1,10 +1,10 @@
-using Microsoft.Azure.Documents;
+using Microsoft.Azure.Cosmos;
 
 namespace SimpleEventStore.AzureDocumentDb
 {
-    public class CollectionOptionsV2
+    public class CollectionOptionsV3
     {
-        public CollectionOptionsV2()
+        public CollectionOptionsV3()
         {
             this.ConsistencyLevel = ConsistencyLevel.Session;
             this.CollectionRequestUnits = 400;

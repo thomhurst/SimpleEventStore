@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SimpleEventStore.AzureDocumentDb
+﻿namespace SimpleEventStore.AzureDocumentDb
 {
     public class DatabaseOptions
     {
