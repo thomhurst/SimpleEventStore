@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -37,10 +38,12 @@ namespace SimpleEventStore.AzureDocumentDb
         public async Task<IStorageEngine> Initialise(CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            _database = (await CreateDatabaseIfItDoesNotExist()).Database;
+            var databaseResponse = await CreateDatabaseIfItDoesNotExist();
+            _database = databaseResponse.Database;
 
             cancellationToken.ThrowIfCancellationRequested();
-            _collection = (await CreateCollectionIfItDoesNotExist()).Container;
+            var containerResponse = (await CreateCollectionIfItDoesNotExist());
+            _collection = containerResponse.Container;
             
             cancellationToken.ThrowIfCancellationRequested();
             await Task.WhenAll(
@@ -111,13 +114,20 @@ namespace SimpleEventStore.AzureDocumentDb
             var collectionProperties = new ContainerProperties()
             {
                 Id = _collectionOptionsV3.CollectionName,
+                IndexingPolicy = new IndexingPolicy { 
+                    IncludedPaths =
+                    {
+                        new IncludedPath { Path = "/*" },
+                    },
+                    ExcludedPaths =
+                    {
+                        new ExcludedPath { Path = "/body/*" },
+                        new ExcludedPath { Path = "/metadata/*" }
+                    }
+                },
                 DefaultTimeToLive = _collectionOptionsV3.DefaultTimeToLive,
-                PartitionKeyPath = "/streamId",
+                PartitionKeyPath = "/streamId"
             };
-            
-            collectionProperties.IndexingPolicy.IncludedPaths.Add(new IncludedPath { Path = "/*" });
-            collectionProperties.IndexingPolicy.ExcludedPaths.Add(new ExcludedPath { Path = "/body/*" });
-            collectionProperties.IndexingPolicy.ExcludedPaths.Add(new ExcludedPath { Path = "/metadata/*" });
 
             return _database.CreateContainerIfNotExistsAsync(collectionProperties,
                 _collectionOptionsV3.CollectionRequestUnits);
@@ -127,9 +137,11 @@ namespace SimpleEventStore.AzureDocumentDb
         {
             _storedProcedureInformation = AppendSprocProvider.GetAppendSprocData();
 
-            var existingStoredProcedure = await _collection.Scripts.ReadStoredProcedureAsync(_storedProcedureInformation.Name);
-
-            if (existingStoredProcedure == null || existingStoredProcedure.StatusCode == HttpStatusCode.NotFound)
+            try
+            {
+                await _collection.Scripts.ReadStoredProcedureAsync(_storedProcedureInformation.Name);
+            }
+            catch (CosmosException cosmosException) when(cosmosException.StatusCode == HttpStatusCode.NotFound)
             {
                 await _collection.Scripts.CreateStoredProcedureAsync(new StoredProcedureProperties(_storedProcedureInformation.Name, _storedProcedureInformation.Body));
             }
