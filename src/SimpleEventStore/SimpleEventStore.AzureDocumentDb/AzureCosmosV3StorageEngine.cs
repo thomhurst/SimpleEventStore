@@ -57,19 +57,19 @@ namespace SimpleEventStore.AzureDocumentDb
 
         public async Task AppendToStream(string streamId, IEnumerable<StorageEvent> events, CancellationToken cancellationToken = default)
         {
-            var docs = events.Select(d => DocumentDbStorageEvent.FromStorageEvent(d, _typeMap, _jsonSerializer)).ToArray();
+            var docs = events.Select(d => DocumentDbStorageEvent.FromStorageEvent(d, _typeMap, _jsonSerializer)).ToArray<dynamic>();
 
             try
             {
                 var result = await _collection.Scripts.ExecuteStoredProcedureAsync<dynamic>(
-                    storedProcedureId: _storedProcedureInformation.Name,
-                    partitionKey: new PartitionKey(streamId), 
-                    requestOptions: new StoredProcedureRequestOptions()
+                    _storedProcedureInformation.Name,
+                    new PartitionKey(streamId),
+                    docs,
+                    new StoredProcedureRequestOptions()
                     {
                         ConsistencyLevel = _collectionOptionsV3.ConsistencyLevel
                     },
-                    cancellationToken: cancellationToken,
-                    parameters: docs);
+                    cancellationToken);
 
                 _loggingOptions.OnSuccess(ResponseInformation.FromWriteResponse(nameof(AppendToStream), result));
             }
