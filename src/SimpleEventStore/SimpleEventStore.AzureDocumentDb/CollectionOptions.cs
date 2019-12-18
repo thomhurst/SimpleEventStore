@@ -2,9 +2,9 @@ using Microsoft.Azure.Documents;
 
 namespace SimpleEventStore.AzureDocumentDb
 {
-    public class CollectionOptionsV2
+    public class CollectionOptions
     {
-        public CollectionOptionsV2()
+        public CollectionOptions()
         {
             this.ConsistencyLevel = ConsistencyLevel.Session;
             this.CollectionRequestUnits = 400;

@@ -14,7 +14,7 @@ namespace SimpleEventStore.AzureDocumentDb
     {
         private readonly DocumentClient client;
         private readonly string databaseName;
-        private readonly CollectionOptionsV2 _collectionOptionsV2;
+        private readonly CollectionOptions collectionOptions;
         private readonly Uri commitsLink;
         private readonly LoggingOptions loggingOptions;
         private readonly ISerializationTypeMap typeMap;
@@ -23,13 +23,13 @@ namespace SimpleEventStore.AzureDocumentDb
         private readonly Uri databaseUri;
         private Uri storedProcLink;
 
-        internal AzureDocumentDbStorageEngine(DocumentClient client, string databaseName, CollectionOptionsV2 collectionOptionsV2, DatabaseOptions databaseOptions, LoggingOptions loggingOptions, ISerializationTypeMap typeMap, JsonSerializer serializer)
+        internal AzureDocumentDbStorageEngine(DocumentClient client, string databaseName, CollectionOptions collectionOptions, DatabaseOptions databaseOptions, LoggingOptions loggingOptions, ISerializationTypeMap typeMap, JsonSerializer serializer)
         {
             this.client = client;
             this.databaseName = databaseName;
             this.databaseOptions = databaseOptions;
-            this._collectionOptionsV2 = collectionOptionsV2;
-            this.commitsLink = UriFactory.CreateDocumentCollectionUri(databaseName, collectionOptionsV2.CollectionName);
+            this.collectionOptions = collectionOptions;
+            this.commitsLink = UriFactory.CreateDocumentCollectionUri(databaseName, collectionOptions.CollectionName);
             this.loggingOptions = loggingOptions;
             this.typeMap = typeMap;
             this.jsonSerializer = serializer;
@@ -62,7 +62,7 @@ namespace SimpleEventStore.AzureDocumentDb
             {
                 var result = await this.client.ExecuteStoredProcedureAsync<dynamic>(
                     storedProcLink,
-                    new RequestOptions { PartitionKey = new PartitionKey(streamId), ConsistencyLevel = this._collectionOptionsV2.ConsistencyLevel },
+                    new RequestOptions { PartitionKey = new PartitionKey(streamId), ConsistencyLevel = this.collectionOptions.ConsistencyLevel },
                     cancellationToken,
                     docs);
 
@@ -113,8 +113,8 @@ namespace SimpleEventStore.AzureDocumentDb
         {
             var collection = new DocumentCollection
             {
-                Id = _collectionOptionsV2.CollectionName,
-                DefaultTimeToLive = _collectionOptionsV2.DefaultTimeToLive
+                Id = collectionOptions.CollectionName,
+                DefaultTimeToLive = collectionOptions.DefaultTimeToLive
             };
 
             collection.PartitionKey.Paths.Add("/streamId");
@@ -124,7 +124,7 @@ namespace SimpleEventStore.AzureDocumentDb
 
             var requestOptions = new RequestOptions
             {
-                OfferThroughput = _collectionOptionsV2.CollectionRequestUnits
+                OfferThroughput = collectionOptions.CollectionRequestUnits
             };
 
             return client.CreateDocumentCollectionIfNotExistsAsync(databaseUri, collection, requestOptions);
@@ -133,7 +133,7 @@ namespace SimpleEventStore.AzureDocumentDb
         private async Task InitialiseStoredProcedure()
         {
             var sproc = AppendSprocProvider.GetAppendSprocData();
-            storedProcLink = UriFactory.CreateStoredProcedureUri(databaseName, _collectionOptionsV2.CollectionName, sproc.Name);
+            storedProcLink = UriFactory.CreateStoredProcedureUri(databaseName, collectionOptions.CollectionName, sproc.Name);
 
             var query = client.CreateStoredProcedureQuery(commitsLink)
                 .Where(x => x.Id == sproc.Name)
@@ -150,14 +150,14 @@ namespace SimpleEventStore.AzureDocumentDb
         }
         private async Task SetCollectionOfferThroughput()
         {
-            if (_collectionOptionsV2.CollectionRequestUnits != null)
+            if (collectionOptions.CollectionRequestUnits != null)
             {
                 var collection =
                     (await client.ReadDocumentCollectionAsync(
-                        UriFactory.CreateDocumentCollectionUri(databaseName, _collectionOptionsV2.CollectionName)))
+                        UriFactory.CreateDocumentCollectionUri(databaseName, collectionOptions.CollectionName)))
                     .Resource;
 
-                await SetOfferThroughput(collection.SelfLink, (int)_collectionOptionsV2.CollectionRequestUnits);
+                await SetOfferThroughput(collection.SelfLink, (int)collectionOptions.CollectionRequestUnits);
             }
         }
 
