@@ -1,7 +1,4 @@
-﻿using Microsoft.Azure.Documents;
-using Microsoft.Azure.Documents.Client;
-using Microsoft.Extensions.Configuration;
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using SimpleEventStore.Tests.Events;
