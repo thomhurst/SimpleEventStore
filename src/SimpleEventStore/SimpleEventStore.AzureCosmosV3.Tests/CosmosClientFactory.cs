@@ -1,5 +1,8 @@
 using Microsoft.Azure.Cosmos;
+using Microsoft.Azure.Cosmos.Fluent;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
+using SimpleEventStore.AzureDocumentDb;
 
 namespace SimpleEventStore.AzureCosmosV3.Tests
 {
@@ -7,10 +10,10 @@ namespace SimpleEventStore.AzureCosmosV3.Tests
     {
         internal static CosmosClient Create()
         {
-            return Create(new CosmosSerializationOptions());
+            return Create(new JsonSerializerSettings());
         }
 
-        internal static CosmosClient Create(CosmosSerializationOptions serializationOptions)
+        internal static CosmosClient Create(JsonSerializerSettings serializationOptions)
         {
             var config = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
@@ -20,10 +23,9 @@ namespace SimpleEventStore.AzureCosmosV3.Tests
             var documentDbUri = config["Uri"];
             var authKey = config["AuthKey"];
 
-            return new CosmosClient(documentDbUri, authKey, new CosmosClientOptions
-            {
-                SerializerOptions = serializationOptions
-            });
+            return new CosmosClientBuilder(documentDbUri, authKey)
+                .WithCustomSerializer(new CosmosJsonNetSerializer(serializationOptions))
+                .Build();
         }
     }
 }

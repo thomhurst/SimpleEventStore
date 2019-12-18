@@ -13,10 +13,9 @@ namespace SimpleEventStore.AzureCosmosV3.Tests
     {
         public const string DefaultDatabaseName = "EventStoreTests";
 
-        internal static Task<IStorageEngine> Create(string collectionName, string databaseName = null, Action<AzureCosmosV3StorageEngineBuilder> builderOverrides = null, CosmosSerializationOptions settings = null, JsonSerializerSettings jsonSerializerSettings = null)
+        internal static Task<IStorageEngine> Create(string collectionName, string databaseName = null, Action<AzureCosmosV3StorageEngineBuilder> builderOverrides = null, JsonSerializerSettings settings = null)
         {
-            settings = settings ?? new CosmosSerializationOptions();
-            jsonSerializerSettings = jsonSerializerSettings ?? new JsonSerializerSettings();
+            settings = settings ?? new JsonSerializerSettings();
             
             databaseName = databaseName ?? DefaultDatabaseName;
 
@@ -50,7 +49,7 @@ namespace SimpleEventStore.AzureCosmosV3.Tests
                         typeof(OrderCreated).GetTypeInfo().Assembly,
                         t => t.Namespace != null && t.Namespace.EndsWith("Events"),
                         t => t.Name))
-                .UseJsonSerializerSettings(jsonSerializerSettings);
+                .UseJsonSerializerSettings(settings);
 
             builderOverrides?.Invoke(builder);
 
