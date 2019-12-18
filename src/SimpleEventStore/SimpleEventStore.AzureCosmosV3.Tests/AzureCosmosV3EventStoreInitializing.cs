@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Cosmos.Linq;
+using Microsoft.Azure.Cosmos.Scripts;
 using Microsoft.Azure.Documents;
 using NUnit.Framework;
 
@@ -29,39 +30,17 @@ namespace SimpleEventStore.AzureCosmosV3.Tests
             var database = client.GetDatabase(DatabaseName);
             var collection = database.GetContainer(collectionName);
 
-            var storedProcedure = await collection.GetItemLinqQueryable<StoredProcedure>()
-                .Where(r => r.Id.StartsWith("appendToStream-"))
-                .ToFeedIterator()
-                .ReadNextAsync();
+            const string queryText = "SELECT * FROM s";
+
+            var storedProcedures = await collection.Scripts.GetStoredProcedureQueryIterator<StoredProcedureProperties>(
+                queryText).ReadNextAsync();
+
+            var expectedStoredProcedure = storedProcedures.Resource.FirstOrDefault(s => s.Id.StartsWith("appendToStream-"));
 
             var offer = await collection.ReadThroughputAsync();
 
-            Assert.That(storedProcedure, Is.Not.Null);
-            Assert.That(storedProcedure.Count, Is.Not.Zero.And.Positive);
+            Assert.That(expectedStoredProcedure, Is.Not.Null);
             Assert.That(offer, Is.EqualTo(TestConstants.RequestUnits));
-            // Assert.That(collection.DefaultTimeToLive, Is.Null);
-            // Assert.That(collection.PartitionKey.Paths.Count, Is.EqualTo(1));
-            // Assert.That(collection.PartitionKey.Paths.Single(), Is.EqualTo("/streamId"));
-            // Assert.That(collection.IndexingPolicy.IncludedPaths.Count, Is.EqualTo(1));
-            // Assert.That(collection.IndexingPolicy.IncludedPaths[0].Path, Is.EqualTo("/*"));
-            // Assert.That(collection.IndexingPolicy.ExcludedPaths.Count, Is.EqualTo(3));
-            // Assert.That(collection.IndexingPolicy.ExcludedPaths[0].Path, Is.EqualTo("/body/*"));
-            // Assert.That(collection.IndexingPolicy.ExcludedPaths[1].Path, Is.EqualTo("/metadata/*"));
-        }
-
-        [Test]
-        public async Task when_initializing_with_a_time_to_live_it_is_set()
-        {
-            var ttl = 60;
-            var collectionName = "TimeToLiveIsSet_" + Guid.NewGuid();
-            var storageEngine = await StorageEngineFactory.Create(collectionName, DatabaseName, x =>
-            {
-                x.UseCollection(o => o.DefaultTimeToLive = ttl);
-            });
-
-            var collection = client.GetContainer(DatabaseName, collectionName);
-
-            //Assert.That(collection.DefaultTimeToLive, Is.EqualTo(ttl));
         }
 
         [Test]
@@ -133,7 +112,7 @@ namespace SimpleEventStore.AzureCosmosV3.Tests
         private static async Task<IStorageEngine> InitialiseStorageEngine(string collectionName, int? collectionThroughput = null,
             int? dbThroughput = null)
         {
-            var storageEngine = await StorageEngineFactory.Create(collectionName, DatabaseName, x => {
+            var storageEngine = await CosmosV3StorageEngineFactory.Create(collectionName, DatabaseName, x => {
                 x.UseCollection(o => o.CollectionRequestUnits = collectionThroughput);
                 x.UseDatabase(o => o.DatabaseRequestUnits = dbThroughput);
             });

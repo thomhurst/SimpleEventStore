@@ -23,7 +23,9 @@ namespace SimpleEventStore.AzureDocumentDb
         private Container _collection;
         private (string Name, string Body) _storedProcedureInformation;
 
-        internal AzureCosmosV3StorageEngine(CosmosClient client, string databaseName, CollectionOptionsV3 collectionOptionsV3, DatabaseOptions databaseOptions, LoggingOptions loggingOptions, ISerializationTypeMap typeMap, JsonSerializer serializer)
+        internal AzureCosmosV3StorageEngine(CosmosClient client, string databaseName,
+            CollectionOptionsV3 collectionOptionsV3, DatabaseOptions databaseOptions, LoggingOptions loggingOptions,
+            ISerializationTypeMap typeMap, JsonSerializer serializer)
         {
             _client = client;
             _databaseName = databaseName;
@@ -43,28 +45,30 @@ namespace SimpleEventStore.AzureDocumentDb
             cancellationToken.ThrowIfCancellationRequested();
             var containerResponse = (await CreateCollectionIfItDoesNotExist());
             _collection = containerResponse.Container;
-            
+
             cancellationToken.ThrowIfCancellationRequested();
             await Task.WhenAll(
                 InitialiseStoredProcedure(),
                 SetDatabaseOfferThroughput(),
                 SetCollectionOfferThroughput()
-                );
+            );
 
             return this;
         }
 
-        public async Task AppendToStream(string streamId, IEnumerable<StorageEvent> events, CancellationToken cancellationToken = default)
+        public async Task AppendToStream(string streamId, IEnumerable<StorageEvent> events,
+            CancellationToken cancellationToken = default)
         {
-            var docs = events.Select(d => DocumentDbStorageEvent.FromStorageEvent(d, _typeMap, _jsonSerializer)).ToArray<dynamic>();
+            var docs = events.Select(d => DocumentDbStorageEvent.FromStorageEvent(d, _typeMap, _jsonSerializer))
+                .ToList();
 
             try
             {
                 var result = await _collection.Scripts.ExecuteStoredProcedureAsync<dynamic>(
                     _storedProcedureInformation.Name,
                     new PartitionKey(streamId),
-                    docs,
-                    new StoredProcedureRequestOptions()
+                    new[] {docs},
+                    new StoredProcedureRequestOptions
                     {
                         ConsistencyLevel = _collectionOptionsV3.ConsistencyLevel
                     },
@@ -78,9 +82,12 @@ namespace SimpleEventStore.AzureDocumentDb
             }
         }
 
-        public async Task<IReadOnlyCollection<StorageEvent>> ReadStreamForwards(string streamId, int startPosition, int numberOfEventsToRead, CancellationToken cancellationToken = default)
+        public async Task<IReadOnlyCollection<StorageEvent>> ReadStreamForwards(string streamId, int startPosition,
+            int numberOfEventsToRead, CancellationToken cancellationToken = default)
         {
-            int endPosition = numberOfEventsToRead == int.MaxValue ? int.MaxValue : startPosition + numberOfEventsToRead;
+            int endPosition = numberOfEventsToRead == int.MaxValue
+                ? int.MaxValue
+                : startPosition + numberOfEventsToRead;
 
             var eventsQuery = _collection.GetItemLinqQueryable<DocumentDbStorageEvent>()
                 .Where(x => x.StreamId == streamId && x.EventNumber >= startPosition && x.EventNumber <= endPosition)
@@ -113,15 +120,16 @@ namespace SimpleEventStore.AzureDocumentDb
             var collectionProperties = new ContainerProperties()
             {
                 Id = _collectionOptionsV3.CollectionName,
-                IndexingPolicy = new IndexingPolicy { 
+                IndexingPolicy = new IndexingPolicy
+                {
                     IncludedPaths =
                     {
-                        new IncludedPath { Path = "/*" },
+                        new IncludedPath {Path = "/*"},
                     },
                     ExcludedPaths =
                     {
-                        new ExcludedPath { Path = "/body/*" },
-                        new ExcludedPath { Path = "/metadata/*" }
+                        new ExcludedPath {Path = "/body/*"},
+                        new ExcludedPath {Path = "/metadata/*"}
                     }
                 },
                 DefaultTimeToLive = _collectionOptionsV3.DefaultTimeToLive,
@@ -135,16 +143,16 @@ namespace SimpleEventStore.AzureDocumentDb
         private async Task InitialiseStoredProcedure()
         {
             _storedProcedureInformation = AppendSprocProvider.GetAppendSprocData();
+            var storedProcedures = await _collection.Scripts.GetStoredProcedureQueryIterator<StoredProcedureProperties>(
+                $"SELECT * FROM s where s.id = '{_storedProcedureInformation.Name}'").ReadNextAsync();
 
-            try
+            if (!storedProcedures.Resource.Any())
             {
-                await _collection.Scripts.ReadStoredProcedureAsync(_storedProcedureInformation.Name);
-            }
-            catch (CosmosException cosmosException) when(cosmosException.StatusCode == HttpStatusCode.NotFound)
-            {
-                await _collection.Scripts.CreateStoredProcedureAsync(new StoredProcedureProperties(_storedProcedureInformation.Name, _storedProcedureInformation.Body));
+                await _collection.Scripts.CreateStoredProcedureAsync(
+                    new StoredProcedureProperties(_storedProcedureInformation.Name, _storedProcedureInformation.Body));
             }
         }
+
         private async Task SetCollectionOfferThroughput()
         {
             if (_collectionOptionsV3.CollectionRequestUnits != null)

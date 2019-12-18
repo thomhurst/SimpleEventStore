@@ -9,7 +9,7 @@ using SimpleEventStore.Tests.Events;
 
 namespace SimpleEventStore.AzureCosmosV3.Tests
 {
-    internal static class StorageEngineFactory
+    internal static class CosmosV3StorageEngineFactory
     {
         public const string DefaultDatabaseName = "EventStoreTests";
 

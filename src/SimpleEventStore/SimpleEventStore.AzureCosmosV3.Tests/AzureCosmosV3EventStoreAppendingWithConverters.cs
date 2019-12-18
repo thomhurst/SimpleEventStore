@@ -30,8 +30,8 @@ namespace SimpleEventStore.AzureCosmosV3.Tests
 
         protected override Task<IStorageEngine> CreateStorageEngine()
         {
-            return StorageEngineFactory.Create("JsonSerializationSettingsTests",
-                jsonSerializerSettings: new JsonSerializerSettings
+            return CosmosV3StorageEngineFactory.Create("JsonSerializationSettingsTests",
+                settings: new JsonSerializerSettings
                 {
                     Converters = new List<JsonConverter>
                     {
