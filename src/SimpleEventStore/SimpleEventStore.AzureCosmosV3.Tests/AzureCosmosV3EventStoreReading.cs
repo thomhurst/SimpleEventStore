@@ -5,7 +5,7 @@ using SimpleEventStore.Tests;
 namespace SimpleEventStore.AzureCosmosV3.Tests
 {
     [TestFixture]
-    public class AzureDocumentDbEventStoreReading : EventStoreReading
+    public class AzureCosmosV3EventStoreReading : EventStoreReading
     {
         protected override Task<IStorageEngine> CreateStorageEngine()
         {

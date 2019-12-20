@@ -8,7 +8,7 @@ using SimpleEventStore.Tests.Events;
 namespace SimpleEventStore.AzureCosmosV3.Tests
 {
     [TestFixture]
-    public class AzureDocumentDbEventStoreReadingPartiallyDeletedStreams
+    public class AzureCosmosV3EventStoreReadingPartiallyDeletedStreams
     {
         [Test]
         public async Task when_reading_a_stream_that_has_deleted_events_the_stream_can_still_be_read()

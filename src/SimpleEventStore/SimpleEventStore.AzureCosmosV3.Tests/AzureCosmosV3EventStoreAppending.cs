@@ -5,7 +5,7 @@ using SimpleEventStore.Tests;
 namespace SimpleEventStore.AzureCosmosV3.Tests
 {
     [TestFixture]
-    public class AzureDocumentDbEventStoreAppending : EventStoreAppending
+    public class AzureCosmosV3EventStoreAppending : EventStoreAppending
     {
         protected override Task<IStorageEngine> CreateStorageEngine()
         {

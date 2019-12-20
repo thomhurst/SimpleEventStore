@@ -2,9 +2,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Azure.Cosmos;
-using Microsoft.Azure.Cosmos.Linq;
 using Microsoft.Azure.Cosmos.Scripts;
-using Microsoft.Azure.Documents;
 using NUnit.Framework;
 
 namespace SimpleEventStore.AzureCosmosV3.Tests
