@@ -43,12 +43,12 @@ namespace SimpleEventStore.CosmosDb
 
         private static string GetCurrentResourceQuotaUsage<T>(Response<T> response)
         {
-            return response.Headers.GetValueOrDefault("x-ms-resource-usage");
+            return response.Headers?.GetValueOrDefault("x-ms-resource-usage");
         }
         
         private static string GetMaxResourceQuota<T>(Response<T> response)
         {
-            return response.Headers.GetValueOrDefault("x-ms-resource-quota");
+            return response.Headers?.GetValueOrDefault("x-ms-resource-quota");
         }
 
         public static ResponseInformation FromReadResponse(string requestIdentifier, FeedResponse<CosmosDbStorageEvent> response)
@@ -79,14 +79,14 @@ namespace SimpleEventStore.CosmosDb
         {
             return new NameValueCollection()
             {
-                {"Location", headers.Location},
-                {"Session", headers.Session},
-                {"RequestCharge", headers.RequestCharge.ToString(CultureInfo.InvariantCulture)},
-                {"ActivityId", headers.ActivityId},
-                {"ContentLength", headers.ContentLength},
-                {"ContentType", headers.ContentType},
-                {"ContinuationToken", headers.ContinuationToken},
-                {"ETag", headers.ETag}
+                {"Location", headers?.Location},
+                {"Session", headers?.Session},
+                {"RequestCharge", headers?.RequestCharge.ToString(CultureInfo.InvariantCulture)},
+                {"ActivityId", headers?.ActivityId},
+                {"ContentLength", headers?.ContentLength},
+                {"ContentType", headers?.ContentType},
+                {"ContinuationToken", headers?.ContinuationToken},
+                {"ETag", headers?.ETag}
             };
         }
     }

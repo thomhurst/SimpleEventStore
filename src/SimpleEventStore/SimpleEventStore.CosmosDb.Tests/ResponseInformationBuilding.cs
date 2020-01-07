@@ -17,8 +17,6 @@ namespace SimpleEventStore.CosmosDb.Tests
             var result = ResponseInformation.FromWriteResponse(Expected.RequestIdentifier, new FakeStoredProcedureResponse<dynamic>());
 
             Assert.That(result.RequestIdentifier, Is.EqualTo(Expected.RequestIdentifier));
-            Assert.That(result.CurrentResourceQuotaUsage, Is.EqualTo(Expected.CurrentResourceQuotaUsage));
-            Assert.That(result.MaxResourceQuota, Is.EqualTo(Expected.MaxResourceQuota));
             Assert.That(result.RequestCharge, Is.EqualTo(Expected.RequestCharge));
             Assert.That(result.ResponseHeaders, Is.EqualTo(Expected.ResponseHeaders));
         }
@@ -54,23 +52,29 @@ namespace SimpleEventStore.CosmosDb.Tests
             internal const string MaxResourceQuota = "TEST-MaxResourceQuota";
             internal const double RequestCharge = 100d;
             internal static NameValueCollection ResponseHeaders = new NameValueCollection();
+
+            static Expected()
+            {
+                ResponseHeaders.Add("Location", "");
+                ResponseHeaders.Add("Session", "");
+                ResponseHeaders.Add("RequestCharge", "0");
+                ResponseHeaders.Add("ActivityId", "");
+                ResponseHeaders.Add("ContentLength", "");
+                ResponseHeaders.Add("ContentType", "");
+                ResponseHeaders.Add("ContinuationToken", "");
+                ResponseHeaders.Add("ETag", "");
+            }
         }
 
         private class FakeStoredProcedureResponse<TValue> : StoredProcedureExecuteResponse<TValue>
         {
             internal FakeStoredProcedureResponse()
             {
-                CurrentResourceQuotaUsage = Expected.CurrentResourceQuotaUsage;
-                MaxResourceQuota = Expected.MaxResourceQuota;
                 RequestCharge = Expected.RequestCharge;
                 ResponseHeaders = Expected.ResponseHeaders;
             }
 
             public override string ActivityId { get; }
-
-            public string CurrentResourceQuotaUsage { get; }
-
-            public string MaxResourceQuota { get; }
 
             public override double RequestCharge { get; }
 
@@ -89,10 +93,13 @@ namespace SimpleEventStore.CosmosDb.Tests
         {
             internal FakeFeedResponse()
             {
-                CurrentResourceQuotaUsage = Expected.CurrentResourceQuotaUsage;
-                MaxResourceQuota = Expected.MaxResourceQuota;
                 RequestCharge = Expected.RequestCharge;
                 ResponseHeaders = Expected.ResponseHeaders;
+                Headers = new Headers
+                {
+                    {"x-ms-resource-quota", Expected.MaxResourceQuota},
+                    {"x-ms-resource-usage", Expected.CurrentResourceQuotaUsage}
+                };
             }
 
             public long DatabaseQuota { get; }
@@ -129,10 +136,6 @@ namespace SimpleEventStore.CosmosDb.Tests
 
             public override string ContinuationToken { get; }
             public override int Count { get; }
-
-            public string MaxResourceQuota { get; }
-
-            public string CurrentResourceQuotaUsage { get; }
 
             public override Headers Headers { get; }
             public override IEnumerable<TValue> Resource { get; }
