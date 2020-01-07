@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
-    <RootNamespace>SimpleEventStore.AzureDocumentDb.Tests</RootNamespace>
+    <RootNamespace>SimpleEventStore.CosmosDb.Tests</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
         <Content Include="appsettings.json">
@@ -23,9 +23,9 @@
     <ProjectReference Include="..\SimpleEventStore.Tests\SimpleEventStore.Tests.csproj" />
   </ItemGroup>
   <PropertyGroup>
-    <Title>SimpleEventStore.AzureDocumentDb.Tests</Title>
+    <Title>SimpleEventStore.CosmosDb.Tests</Title>
     <Company>ASOS</Company>
     <Copyright>Copyright ASOS ©2016</Copyright>
-    <Product>SimpleEventStore.AzureDocumentDb.Tests</Product>
+    <Product>SimpleEventStore.CosmosDb.Tests</Product>
   </PropertyGroup>
 </Project>
