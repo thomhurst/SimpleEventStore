@@ -11,7 +11,7 @@ using SimpleEventStore.Tests.Events;
 namespace SimpleEventStore.CosmosDb.Tests
 {
     [TestFixture]
-    public class AzureCosmosV3EventStoreAppendingWithConverters : EventStoreTestBase
+    public class AzureCosmosDbEventStoreAppendingWithConverters : EventStoreTestBase
     {
         [Test]
         public async Task when_appending_an_event_that_requires_a_converter_the_event_is_saved_and_read()

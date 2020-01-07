@@ -5,7 +5,7 @@ using NUnit.Framework;
 namespace SimpleEventStore.CosmosDb.Tests
 {
     [TestFixture]
-    public class AzureCosmosV3StorageEngineBuilderTests
+    public class AzureCosmosDbStorageEngineBuilderTests
     {
         [Test]
         public void when_creating_an_instance_the_document_client_must_be_supplied()

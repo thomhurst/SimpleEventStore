@@ -5,11 +5,11 @@ using SimpleEventStore.Tests;
 namespace SimpleEventStore.CosmosDb.Tests
 {
     [TestFixture]
-    public class AzureCosmosV3EventStoreReading : EventStoreReading
+    public class AzureCosmosDbEventStoreAppending : EventStoreAppending
     {
         protected override Task<IStorageEngine> CreateStorageEngine()
         {
-            return CosmosV3StorageEngineFactory.Create("ReadingTests");
+            return CosmosV3StorageEngineFactory.Create("AppendingTests");
         }
     }
 }

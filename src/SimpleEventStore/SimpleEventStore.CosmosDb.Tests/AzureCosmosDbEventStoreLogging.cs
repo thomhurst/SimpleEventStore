@@ -6,7 +6,7 @@ using SimpleEventStore.Tests.Events;
 namespace SimpleEventStore.CosmosDb.Tests
 {
     [TestFixture]
-    public class AzureCosmosV3EventStoreLogging
+    public class AzureCosmosDbEventStoreLogging
     {
         [Test]
         public async Task when_a_write_operation_is_successful_the_log_callback_is_called()
