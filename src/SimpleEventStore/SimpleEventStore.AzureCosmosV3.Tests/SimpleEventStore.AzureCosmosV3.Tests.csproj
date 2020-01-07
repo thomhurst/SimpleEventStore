@@ -22,7 +22,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\SimpleEventStore.AzureDocumentDb\SimpleEventStore.AzureDocumentDb.csproj" />
+      <ProjectReference Include="..\SimpleEventStore.CosmosDb\SimpleEventStore.CosmosDb.csproj" />
       <ProjectReference Include="..\SimpleEventStore.Tests\SimpleEventStore.Tests.csproj" />
       <ProjectReference Include="..\SimpleEventStore\SimpleEventStore.csproj" />
     </ItemGroup>
