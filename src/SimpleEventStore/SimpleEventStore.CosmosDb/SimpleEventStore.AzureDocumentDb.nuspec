@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0"?>
 <package >
   <metadata>
-    <id>Asos.SimpleEventStore.CosmosDb</id>
+    <id>Asos.SimpleEventStore.AzureDocumentDb</id>
     <version>$version$</version>
     <authors>$author$</authors>
     <owners>$author$</owners>
