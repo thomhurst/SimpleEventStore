@@ -9,7 +9,7 @@ namespace SimpleEventStore.CosmosDb.Tests
     {
         protected override Task<IStorageEngine> CreateStorageEngine()
         {
-            return CosmosV3StorageEngineFactory.Create("ReadingTests");
+            return CosmosDbStorageEngineFactory.Create("ReadingTests");
         }
     }
 }

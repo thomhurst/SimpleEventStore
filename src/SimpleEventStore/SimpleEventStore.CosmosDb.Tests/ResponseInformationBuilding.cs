@@ -155,7 +155,7 @@ namespace SimpleEventStore.CosmosDb.Tests
 
             public override IEnumerator<TValue> GetEnumerator()
             {
-                throw new NotImplementedException();
+                yield return Activator.CreateInstance<TValue>();
             }
         }
     }

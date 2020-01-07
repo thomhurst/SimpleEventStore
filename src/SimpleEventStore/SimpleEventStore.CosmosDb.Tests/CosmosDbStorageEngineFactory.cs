@@ -8,7 +8,7 @@ using SimpleEventStore.Tests.Events;
 
 namespace SimpleEventStore.CosmosDb.Tests
 {
-    internal static class CosmosV3StorageEngineFactory
+    internal static class CosmosDbStorageEngineFactory
     {
         public const string DefaultDatabaseName = "EventStoreTests";
 

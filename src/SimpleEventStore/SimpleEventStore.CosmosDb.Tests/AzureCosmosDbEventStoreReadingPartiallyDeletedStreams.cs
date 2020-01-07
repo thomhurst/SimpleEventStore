@@ -16,11 +16,11 @@ namespace SimpleEventStore.CosmosDb.Tests
             const string collectionName = "ReadingPartialStreamTests";
 
             var client = CosmosClientFactory.Create();
-            var storageEngine = await CosmosV3StorageEngineFactory.Create(collectionName);
+            var storageEngine = await CosmosDbStorageEngineFactory.Create(collectionName);
             var eventStore = new EventStore(storageEngine);
             var streamId = Guid.NewGuid().ToString();
             await eventStore.AppendToStream(streamId, 0, new EventData(Guid.NewGuid(), new OrderCreated(streamId)), new EventData(Guid.NewGuid(), new OrderDispatched(streamId)));
-            await SimulateTimeToLiveExpiration(CosmosV3StorageEngineFactory.DefaultDatabaseName, collectionName, client, streamId);
+            await SimulateTimeToLiveExpiration(CosmosDbStorageEngineFactory.DefaultDatabaseName, collectionName, client, streamId);
 
             var stream = await eventStore.ReadStreamForwards(streamId);
 

@@ -39,7 +39,7 @@ namespace SimpleEventStore.CosmosDb.Tests
 
         private static Task<IStorageEngine> CreateStorageEngine(Action<ResponseInformation> onSuccessCallback, string collectionName = "LoggingTests")
         {
-            return CosmosV3StorageEngineFactory.Create("LoggingTests", builderOverrides: x => x.UseLogging(o => o.Success = onSuccessCallback));
+            return CosmosDbStorageEngineFactory.Create("LoggingTests", builderOverrides: x => x.UseLogging(o => o.Success = onSuccessCallback));
         }
     }
 }

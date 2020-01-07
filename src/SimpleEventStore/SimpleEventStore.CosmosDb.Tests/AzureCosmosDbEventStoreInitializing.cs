@@ -110,7 +110,7 @@ namespace SimpleEventStore.CosmosDb.Tests
         private static async Task<IStorageEngine> InitialiseStorageEngine(string collectionName, int? collectionThroughput = null,
             int? dbThroughput = null)
         {
-            var storageEngine = await CosmosV3StorageEngineFactory.Create(collectionName, DatabaseName, x => {
+            var storageEngine = await CosmosDbStorageEngineFactory.Create(collectionName, DatabaseName, x => {
                 x.UseCollection(o => o.CollectionRequestUnits = collectionThroughput);
                 x.UseDatabase(o => o.DatabaseRequestUnits = dbThroughput);
             });
