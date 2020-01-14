@@ -35,10 +35,20 @@ namespace SimpleEventStore.CosmosDb.Tests
 
             var expectedStoredProcedure = storedProcedures.Resource.FirstOrDefault(s => s.Id.StartsWith("appendToStream-"));
 
+            var collectionResponse = await collection.ReadContainerAsync();
+            var collectionProperties = collectionResponse.Resource;
+            
             var offer = await collection.ReadThroughputAsync();
 
             Assert.That(expectedStoredProcedure, Is.Not.Null);
             Assert.That(offer, Is.EqualTo(TestConstants.RequestUnits));
+            Assert.That(collectionProperties.DefaultTimeToLive, Is.Null);
+            Assert.That(collectionProperties.PartitionKeyPath, Is.EqualTo("/streamId"));
+            Assert.That(collectionProperties.IndexingPolicy.IncludedPaths.Count, Is.EqualTo(1));
+            Assert.That(collectionProperties.IndexingPolicy.IncludedPaths[0].Path, Is.EqualTo("/*"));
+            Assert.That(collectionProperties.IndexingPolicy.ExcludedPaths.Count, Is.EqualTo(3));
+            Assert.That(collectionProperties.IndexingPolicy.ExcludedPaths[0].Path, Is.EqualTo("/body/*"));
+            Assert.That(collectionProperties.IndexingPolicy.ExcludedPaths[1].Path, Is.EqualTo("/metadata/*"));
         }
 
         [Test]
@@ -51,6 +61,25 @@ namespace SimpleEventStore.CosmosDb.Tests
 
             Assert.AreEqual(dbThroughput, await GetDatabaseThroughput());
             Assert.AreEqual(null, await GetCollectionThroughput(collectionName));
+        }
+
+        [TestCase(60)]
+        [TestCase(10)]
+        [TestCase(90)]
+        public async Task when_initializing_with_a_time_to_live_it_is_set(int ttl)
+        {
+            var collectionName = "TimeToLiveIsSet_" + Guid.NewGuid();
+            var storageEngine = await CosmosDbStorageEngineFactory.Create(collectionName, DatabaseName,
+                x =>
+                {
+                    x.UseCollection(o => o.DefaultTimeToLive = ttl);
+                });
+
+            var collection = await client.GetContainer(DatabaseName, collectionName).ReadContainerAsync();
+
+            var collectionProperties = collection.Resource;
+
+            Assert.That(collectionProperties.DefaultTimeToLive, Is.EqualTo(ttl));
         }
 
 
